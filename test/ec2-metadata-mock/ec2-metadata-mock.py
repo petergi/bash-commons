@@ -30,17 +30,15 @@ def dynamic_data(path):
     return lookup_path(path, DYNAMIC_DATA_ENV_VAR_PREFIX)
 
 def lookup_path(path, prefix):
-    env_var_name = path_to_env_var(path, prefix)
-    logging.info('Looking for env var %s' % env_var_name)
-    if env_var_name in os.environ:
-        return os.environ[env_var_name]
-    else:
-        return 'Value for environment variable %s not found' % env_var_name, 404
+   env_var_name = path_to_env_var(path, prefix)
+   logging.info(f'Looking for env var {env_var_name}')
+   return os.environ.get(
+       env_var_name,
+       (f'Value for environment variable {env_var_name} not found', 404),
+   )
 
 def path_to_env_var(path, prefix):
-    return '%s_%s' % (prefix, strip_suffix(path, '/').replace('/', '__').replace('-', '_'))
+   return f"{prefix}_{strip_suffix(path, '/').replace('/', '__').replace('-', '_')}"
 
 def strip_suffix(str, suffix):
-    if str.endswith(suffix):
-        return str[:-len(suffix)]
-    return str
+   return str[:-len(suffix)] if str.endswith(suffix) else str
